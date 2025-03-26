@@ -1,5 +1,4 @@
 permissions:
-  id-token: write # required to use OIDC authentication
   contents: read # required to checkout the code from the repo
   packages: write # required for push to GHCR
 name: Test, Build and Push

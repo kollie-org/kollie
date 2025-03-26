@@ -1,5 +1,4 @@
 permissions:
-  id-token: write # required to use OIDC authentication
   contents: write
   packages: write
 concurrency: helm-${{ github.ref }}
@@ -54,7 +53,7 @@ jobs:
     name: Publish to OCI Registry
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: github.ref_name == 'main'
+    if: github.ref_type == 'tag'
     strategy:
       fail-fast: false
       max-parallel: 1
