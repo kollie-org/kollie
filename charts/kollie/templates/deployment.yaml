@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "kollie.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "kollie.selectorLabels" . | nindent 6 }}
@@ -42,7 +40,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: 8080
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:
@@ -56,14 +54,34 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.volumes }}
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /config/kollie
+              name: configmap
+              readOnly: true
+          env:
+            - name: APPLICATION_STAGE
+              value: production
+            - name: KOLLIE_APP_TEMPLATE_JSON_PATH
+              value: /config/kollie/app_templates.json
+            - name: KOLLIE_APP_BUNDLE_JSON_PATH
+              value: /config/kollie/app_bundles.json
+            - name: KOLLIE_COMMON_SUBSTITUTIONS_JSON_PATH
+              value: /config/kollie/common_substitutions.json
+            - name: KOLLIE_EXTENDED_LEASE_TEST_ENV_NAMES
+              value: {{ .Values.config.extendedLeaseTestEnvNames | quote }}
+            - name: KOLLIE_LEASE_EXCLUSION_LIST
+              value: {{ .Values.config.leaseExclusionList | quote }}
+            - name: KOLLIE_DEFAULT_FLUX_REPOSITORY
+              value: {{ .Values.config.defaultFluxRepository | quote }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - emptyDir: {}
+          name: tmp
+        - configMap:
+            defaultMode: 420
+            name: {{ include "kollie.fullname" . }}
+          name: configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

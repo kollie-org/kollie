@@ -38,16 +38,24 @@ podAnnotations: {}
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+podSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsGroup: 10001
+  runAsUser: 10001
+  seccompProfile:
+    type: RuntimeDefault
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+securityContext:
+  fsGroup: 10001
+  runAsGroup: 10001
+  runAsNonRoot: true
+  runAsUser: 10001
+  seccompProfile:
+    type: RuntimeDefault
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
@@ -60,7 +68,8 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -73,7 +82,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -88,33 +98,12 @@ resources: {}
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   httpGet:
-    path: /
+    path: /ping
     port: http
 readinessProbe:
   httpGet:
-    path: /
+    path: /ping
     port: http
-
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
 
 nodeSelector: {}
 
@@ -122,42 +111,46 @@ tolerations: []
 
 affinity: {}
 
-appTemplates: |-
-  [
-    {
-      "app_name": "example-service",
-      "label": "Example Service",
-      "image_repository_ref": {
-        "name": "example-service",
-        "namespace": "example-service"
+config:
+  appTemplates: |-
+    [
+      {
+        "app_name": "example-service",
+        "label": "Example Service",
+        "image_repository_ref": {
+          "name": "example-service",
+          "namespace": "example-service"
+        },
+        "default_image_tag_prefix": "staging",
+        "git_repository_path": "./example-service/kollie"
       },
-      "default_image_tag_prefix": "staging",
-      "git_repository_path": "./example-service/kollie"
-    },
+      {
+        "app_name": "example-service-2",
+        "label": "Example Service Two",
+        "image_repository_ref": {
+          "name": "example-service-2",
+          "namespace": "example-service-2"
+        },
+        "default_image_tag_prefix": "staging",
+        "git_repository_path": "./example-service-2/kollie"
+      }
+    ]
+  appBundles: |-
+    [
+      {
+        "name": "🐙 Example Service Bundle",
+        "description": "All the components needed to run the example service",
+        "apps": [
+          "example-service",
+          "example-service-2"
+        ]
+      }
+    ]
+  commonSubstitutions: |-
     {
-      "app_name": "example-service-2",
-      "label": "Example Service Two",
-      "image_repository_ref": {
-        "name": "example-service-2",
-        "namespace": "example-service-2"
-      },
-      "default_image_tag_prefix": "staging",
-      "git_repository_path": "./example-service-2/kollie"
+      "stage": "testing",
+      "zone_name": "testenvs.example.com"
     }
-  ]
-appBundles: |-
-  [
-    {
-      "name": "🐙 Example Service Bundle",
-      "description": "All the components needed to run the example service",
-      "apps": [
-        "example-service",
-        "example-service-2"
-      ]
-    }
-  ]
-commonSubstitutions: |-
-  {
-    "stage": "testing",
-    "zone_name": "testenvs.example.com"
-  }
+  defaultFluxRepository: kollie
+  leaseExclusionList: ""
+  extendedLeaseTestEnvNames: ""

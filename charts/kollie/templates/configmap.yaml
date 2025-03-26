@@ -45,8 +45,8 @@ metadata:
     {{- include "kollie.labels" . | nindent 4 }}
 data:
   app_templates.json: |
-    {{- tpl .Values.appTemplates $ | nindent 4 }}
+    {{- tpl .Values.config.appTemplates $ | nindent 4 }}
   app_bundles.json: |
-    {{- tpl .Values.appBundles $ | nindent 4 }}
+    {{- tpl .Values.config.appBundles $ | nindent 4 }}
   common_substitutions.json: |
-    {{- tpl .Values.commonSubstitutions $ | nindent 4 }}
+    {{- tpl .Values.config.commonSubstitutions $ | nindent 4 }}
