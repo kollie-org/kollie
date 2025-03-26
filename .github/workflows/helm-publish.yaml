@@ -1,0 +1,81 @@
+permissions:
+  id-token: write # required to use OIDC authentication
+  contents: write
+  packages: write
+concurrency: helm-${{ github.ref }}
+name: Build and Publish Charts
+on:
+  push:
+jobs:
+  chart-testing:
+    name: Chart Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        chart: ["kollie"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Helm Lint
+        run: helm lint charts/${{ matrix.chart }}/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2
+      - name: Run chart-testing (lint)
+        run: ct lint --charts charts/${{ matrix.chart }}/
+  kubeconform:
+    name: kubeconform
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        chart: ["kollie"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Install kubeconform
+        run: |
+          version=$(curl -sL https://api.github.com/repos/yannh/kubeconform/releases/latest | jq -r ".tag_name")
+          echo "Downloading version ${version}"
+          curl -OL https://github.com/yannh/kubeconform/releases/download/${version}/kubeconform-linux-amd64.tar.gz
+          tar xvf kubeconform-linux-amd64.tar.gz
+      - name: Run kubeconform
+        run: |
+          echo "Running kubeconform with default values"
+          helm template charts/${{ matrix.chart }} | ./kubeconform -skip ServiceProfile -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' -summary
+  helm_publish_oci:
+    name: Publish to OCI Registry
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.ref_name == 'main'
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        chart: ["kollie"]
+    needs: [chart-testing, kubeconform]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Package with Helm
+        id: package
+        run: helm package charts/${{ matrix.chart }}
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push to GHCR
+        run: helm push ${{ matrix.chart }}-*.tgz oci://ghcr.io/kollie-org/kollie/${{ matrix.chart }}
