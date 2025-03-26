@@ -1,0 +1,52 @@
+# app_templates.json
+# =================
+# app_templates.json is a list of app templates that kollie can deploy.
+# "App Template" is a bunch of configuration that kollie needs in order to
+# create an environment for that app.
+#
+# app_templates.json attribute reference:
+# - app_name: Kollie uses this value to generate the Kustomization.spec.path
+#             This value needs to be a valid top-level directory in this git repo
+#             Help me update this to something like app_path
+#
+# - label: This is the label that will be used in the UI
+#
+# - image_repository_ref: Used to generate ImagePolicy.spec.imageRepositoryRef
+#
+# - image_repository_ref.namespace: Namespace where the ImageRepository is located
+# - image_repository_ref.name: Name of the ImageRepository resource in the cluster
+#
+# - default_image_tag_prefix: The default image tag prefix that kollie will use to deploy the app
+#
+# app_bundles.json
+# =================
+# An App Bundle refers to a group of app templates (by name).
+# They allow engineers to spin up a collection of apps with a single action
+#
+# Attribute reference:
+#
+# Following attributes are required
+# - name: Name of the bundle. This value is displayed in the UI
+#
+# - description: Description of the bundle displayed to the user.
+#
+# - apps: A list of app names (str) that are part of the bundle.
+#         These names must match the app template names
+#
+# ------------
+#
+# Emojis are mandatory.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kollie.fullname" . }}
+  labels:
+    {{- include "kollie.labels" . | nindent 4 }}
+data:
+  app_templates.json:
+    {{- tpl .Values.appTemplates $ | nindent 4 }}
+  app_bundles.json:
+    {{- tpl .Values.appBundles $ | nindent 4 }}
+  common_substitutions.json:
+    {{- tpl .Values.commonSubstitutions $ | nindent 4 }}
