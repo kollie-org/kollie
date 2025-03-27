@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kollie.fullname" . }}
+  name: {{ include "kollie.fullname" . }}-daemon
   labels:
     {{- include "kollie.labels" . | nindent 4 }}
-    app.kubernetes.io/component: kollie
+    app.kubernetes.io/component: kollie-daemon
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "kollie.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: kollie
+      app.kubernetes.io/component: kollie-daemon
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
       {{- end }}
       labels:
         {{- include "kollie.labels" . | nindent 8 }}
-        app.kubernetes.io/component: kollie
+        app.kubernetes.io/component: kollie-daemon
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -41,19 +41,20 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python3", "/app/kollie/app/cli/bin.py", "reconcile", "--heartbeat"]
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /ping
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /ping
-              port: http
-          {{- with .Values.resources }}
+            exec:
+              command:
+              - sh
+              - -c
+              - 'test $(($(date +%s) - $(stat -c "%Y" /tmp/alive.txt))) -lt 120'
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          {{- with .Values.daemon.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
