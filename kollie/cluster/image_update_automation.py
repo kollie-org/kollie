@@ -120,14 +120,9 @@ def _get_latest_image(image_policies) -> str | None:
     image_policy = image_policies["items"][0]
 
     try:
-        latest_image = image_policy["status"]["latestImage"]
-        latest_image_tag = latest_image.split(":")[1]
-        return latest_image_tag
+        return image_policy["status"]["latestRef"]["tag"]
     except KeyError:
-        logger.warning("skip.latestImage_not_found", image_policy=image_policy)
-        return None
-    except IndexError:
-        logger.warning("skip.invalid_image_tag", image=latest_image)
+        logger.warning("skip.latestRef_not_found", image_policy=image_policy)
         return None
 
 

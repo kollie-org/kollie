@@ -29,7 +29,10 @@ def dummy_image_policy():
         "spec": {},
         "status": {
             "conditions": [],
-            "latestImage": "repository.local/boofar:main-latest",
+            "latestRef": {
+                "name": "repository.local/boofar",
+                "tag": "main-latest"
+            },
             "observedGeneration": 1,
         },
     }
@@ -44,9 +47,9 @@ def test_handle_image_update_policy_event_queries_image_policy_for_latest_tag(
 
     find_image_policies_mock.return_value = {"items": [dummy_image_policy]}
 
-    # prepare an event for the image policy but having a different latestImage
+    # prepare an event for the image policy but having a different latestTag
     event = {"type": "UPDATE", "object": {**dummy_image_policy}}
-    event["object"]["status"]["latestImage"] = "repository.local/boofar:main-not-latest"
+    event["object"]["status"]["latestRef"]["tag"] = "main-not-latest"
 
     # act
     handle_image_policy_event(event)
@@ -104,7 +107,7 @@ def test_handle_image_update_policy_event_no_latest_image(
 ):
     # arrange
 
-    # prepare an ImagePolicy that doesn't have a latestImage
+    # prepare an ImagePolicy that doesn't have a latestTag
     image_policy = {**dummy_image_policy}
     image_policy["status"] = {"conditions": [], "observedGeneration": 1}
 
@@ -121,7 +124,7 @@ def test_handle_image_update_policy_event_no_latest_image(
     # assert
     update_app_mock.assert_not_called()
     logger_mock.warning.assert_called_once_with(
-        "skip.latestImage_not_found", image_policy=image_policy
+        "skip.latestRef_not_found", image_policy=image_policy
     )
 
 
@@ -155,8 +158,8 @@ def test_handle_image_update_policy_event_with_multiple_matching_image_policies(
     }
     mock_find_image_policies.return_value = {
         "items": [
-            {"status": {"latestImage": "123:456"}},
-            {"status": {"latestImage": "789:012"}},
+            {"status": {"latestRef": {"name": "123", "tag": "456"}}},
+            {"status": {"latestRef": {"name": "789", "tag": "012"}}},
         ]
     }
     handle_image_policy_event(event)
@@ -166,27 +169,6 @@ def test_handle_image_update_policy_event_with_multiple_matching_image_policies(
         attributes={"image_tag": "456"},
     )
     mock_logger.warning.assert_not_called()
-
-
-@patch("kollie.cluster.image_update_automation.logger")
-@patch("kollie.cluster.image_update_automation.find_image_policies")
-def test_handle_image_update_policy_event_incorrect_image_format(
-    mock_find_image_policies, mock_logger
-):
-    event = {
-        "object": {
-            "metadata": {
-                "labels": {"tails-app-environment": "test", "tails-app-name": "test"}
-            }
-        }
-    }
-    mock_find_image_policies.return_value = {
-        "items": [{"status": {"latestImage": "incorrect-format"}}]
-    }
-    handle_image_policy_event(event)
-    mock_logger.warning.assert_called_once_with(
-        "skip.invalid_image_tag", image="incorrect-format"
-    )
 
 
 @patch("kollie.cluster.image_update_automation.watch.Watch")
