@@ -3,7 +3,7 @@
 This chart is pushed to GHCR as an OCI artifact. You can use in Flux like this:
 
 ```
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: kollie

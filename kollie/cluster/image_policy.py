@@ -64,7 +64,7 @@ def create_owned_image_policy(
 
     # create the ImagePolicy resource
     image_policy = {
-        "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+        "apiVersion": "image.toolkit.fluxcd.io/v1",
         "kind": "ImagePolicy",
         "metadata": metadata,
         "spec": asdict(image_policy_spec),
@@ -73,7 +73,7 @@ def create_owned_image_policy(
     try:
         api.create_namespaced_custom_object(
             group="image.toolkit.fluxcd.io",
-            version="v1beta2",
+            version="v1",
             namespace=KOLLIE_NAMESPACE,
             plural="imagepolicies",
             body=image_policy,
@@ -102,7 +102,7 @@ def find_image_policies(env_name: str, app_name: str | None = None):
 
     return api.list_namespaced_custom_object(
         group="image.toolkit.fluxcd.io",
-        version="v1beta2",
+        version="v1",
         namespace=KOLLIE_NAMESPACE,
         plural="imagepolicies",
         label_selector=",".join(labels),
@@ -121,7 +121,7 @@ def delete_image_policies(env_name: str, app_name: str | None = None):
     for policy in image_policies["items"]:
         api.delete_namespaced_custom_object(
             group="image.toolkit.fluxcd.io",
-            version="v1beta2",
+            version="v1",
             namespace=KOLLIE_NAMESPACE,
             plural="imagepolicies",
             name=policy["metadata"]["name"],

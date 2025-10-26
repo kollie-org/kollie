@@ -38,7 +38,7 @@ def test_create_owned_image_policy(mock_kube_client):
     )
 
     expected_body = {
-        "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+        "apiVersion": "image.toolkit.fluxcd.io/v1",
         "kind": "ImagePolicy",
         "metadata": {
             "name": "test_env-test_app",
@@ -72,7 +72,7 @@ def test_create_owned_image_policy(mock_kube_client):
 
     mock_api.create_namespaced_custom_object.assert_called_once_with(
         group="image.toolkit.fluxcd.io",
-        version="v1beta2",
+        version="v1",
         namespace="kollie",
         plural="imagepolicies",
         body=expected_body,

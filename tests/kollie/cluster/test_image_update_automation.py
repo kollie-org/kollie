@@ -16,7 +16,7 @@ def patch_connect_to_cluster():
 @pytest.fixture()
 def dummy_image_policy():
     yield {
-        "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+        "apiVersion": "image.toolkit.fluxcd.io/v1",
         "kind": "ImagePolicy",
         "metadata": {
             "labels": {

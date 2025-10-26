@@ -37,7 +37,7 @@ def watch_for_image_updates():
     _w = watch.Watch()
     filters = dict(
         group="image.toolkit.fluxcd.io",
-        version="v1beta2",
+        version="v1",
         namespace=KOLLIE_NAMESPACE,
         plural="imagepolicies",
     )

@@ -46,11 +46,11 @@ def build_kustomization(env_name: str, app_name: str) -> dict:
                     },
                     {
                         "id": f"{app_name}-{env_name}_image.toolkit.fluxcd.io_ImagePolicy",  # noqa
-                        "v": "v1beta2",
+                        "v": "v1",
                     },
                     {
                         "id": f"{app_name}-{env_name}_image.toolkit.fluxcd.io_ImageRepository",  # noqa
-                        "v": "v1beta2",
+                        "v": "v1",
                     },
                 ]
             },
