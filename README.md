@@ -43,6 +43,7 @@ Kollie currently makes quite a few assumptions about your environment and your F
 * The ownership attribution of environments relies on `x-auth-request-email` and `x-auth-request-user` headers being sent in requests from something like oauth2-proxy
 * All Kustomizations created by Kollie have an `environment` and a `downscaler_uptime` [substitution](https://fluxcd.io/flux/components/kustomize/kustomizations/#post-build-variable-substitution). The first just contains the environment name, the second provides a time window for when the environment should _not_ be scaled to 0. More in the [Downscaling](#downscaling) section.
 * Kustomization labels and annotations are hardcoded to Tails.com conventions
+* From version 0.1.0 Kollie requires a minimum of Flux 2.7
 
 In addition the following features still have hardcoding, preventing them from working outside of Tails.com (PRs welcome to fix):
 * Custom GitRepository Kubernetes resource creation to allow tracking of a non-default branch

@@ -15,7 +15,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/kollie-org/charts/kollie
   ref:
-    tag: "0.0.1"
+    tag: "0.1.0"
 ```
 
 An example Helm Release of Kollie might look something like this:
