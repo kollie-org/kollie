@@ -15,7 +15,7 @@ jobs:
         chart: ["kollie"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install Helm
         uses: azure/setup-helm@v4
       - name: Helm Lint
@@ -36,7 +36,7 @@ jobs:
         chart: ["kollie"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install Helm
         uses: azure/setup-helm@v4
       - name: Install kubeconform
@@ -64,7 +64,7 @@ jobs:
     needs: [chart-testing, kubeconform]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Install Helm
