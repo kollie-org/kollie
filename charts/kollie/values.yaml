@@ -159,3 +159,4 @@ config:
   defaultFluxRepository: kollie
   leaseExclusionList: ""
   extendedLeaseTestEnvNames: ""
+  remediateImageTag: "False"

@@ -12,6 +12,8 @@ from kollie.cluster.kustomization import (
     get_kustomizations,
 )
 from kollie.cluster.kustomization_request import PatchKustomizationRequest
+import re
+import os
 
 
 def create_app(
@@ -34,6 +36,10 @@ def create_app(
 
     app_templates = get_app_template_store()
     app_template = app_templates.get_by_name(app_name=app_name)
+
+    is_remediate_image_tag = os.environ.get("KOLLIE_REMEDIATE_IMAGE_TAG", "False").lower() == "true"
+    if image_tag_prefix is not None and is_remediate_image_tag:
+        image_tag_prefix = re.sub(r"[^\w.-]", '-', image_tag_prefix)
 
     if not app_template:
         raise KollieConfigError(message=f"App template not found for {app_name}")
