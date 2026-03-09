@@ -73,7 +73,7 @@ jobs:
         id: package
         run: helm package charts/${{ matrix.chart }}
       - name: Login to ghcr.io
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
