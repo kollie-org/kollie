@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
       - name: Helm Lint
         run: helm lint charts/${{ matrix.chart }}/
       - uses: actions/setup-python@v6
@@ -38,7 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
       - name: Install kubeconform
         run: |
           curl --version
@@ -68,12 +68,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
       - name: Package with Helm
         id: package
         run: helm package charts/${{ matrix.chart }}
       - name: Login to ghcr.io
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
