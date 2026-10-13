@@ -1,6 +1,6 @@
 from kollie.cluster.ingress import get_ingress
 from kollie.cluster.configmap import get_configmap
-from kollie.cluster.image_policy import create_owned_image_policy, delete_image_policies
+from kollie.cluster.image_policy import create_owned_image_policy
 from kollie.exceptions import KollieConfigError, KollieException
 from kollie.models import KollieApp, EnvironmentMetadata
 from kollie.persistence import get_app_template_store
@@ -150,8 +150,8 @@ def _refresh_image_policy(env_name: str, app_name: str, image_tag_prefix: str, o
     if not app_template:
         raise KollieConfigError(message=f"App template not found for {app_name}")
 
-    delete_image_policies(env_name=env_name, app_name=app_name)
-
+    # Updates the existing ImagePolicy in place. Deleting it first makes the
+    # create fail, because the Flux finalizer keeps the old object for a while.
     create_owned_image_policy(
         env_name=env_name,
         image_tag_prefix=image_tag_prefix,
