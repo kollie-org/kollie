@@ -48,8 +48,10 @@ def create_owned_image_policy(
         kind=owner_kind,
     )
 
+    name = f"{env_name}-{app_template.app_name}"
+
     metadata = client.V1ObjectMeta(
-        name=f"{env_name}-{app_template.app_name}",
+        name=name,
         labels={
             "tails-app-stage": "testing",
             "tails-app-environment": env_name,
@@ -78,7 +80,10 @@ def create_owned_image_policy(
             plural="imagepolicies",
             body=image_policy,
         )
-    except client.ApiException:
+    except client.ApiException as exc:
+        if exc.status == 409 and _update_image_policy(api, name, image_policy):
+            return
+
         logger.error(
             f"Failed to create ImagePolicy for {app_template.app_name} in {env_name}",
             app_name=app_template.app_name,
@@ -89,6 +94,48 @@ def create_owned_image_policy(
         raise KollieImagePolicyException(
             app_name=app_template.app_name, env_name=env_name
         )
+
+
+def _update_image_policy(
+    api: client.CustomObjectsApi, name: str, image_policy: dict
+) -> bool:
+    """
+    Updates an existing ImagePolicy in place with a merge patch.
+
+    ImagePolicies carry a Flux finalizer, so a deleted ImagePolicy stays in the
+    cluster until the controller removes it. Creating it again straight after
+    the delete fails with 409, so an existing ImagePolicy is patched instead.
+
+    Returns:
+        bool: False if the ImagePolicy was not updated, for example because
+            it is being deleted.
+    """
+    try:
+        existing = api.get_namespaced_custom_object(
+            group="image.toolkit.fluxcd.io",
+            version="v1",
+            namespace=KOLLIE_NAMESPACE,
+            plural="imagepolicies",
+            name=name,
+        )
+
+        if existing["metadata"].get("deletionTimestamp"):
+            logger.warning("ImagePolicy is being deleted, not updating it", name=name)
+            return False
+
+        api.patch_namespaced_custom_object(
+            group="image.toolkit.fluxcd.io",
+            version="v1",
+            namespace=KOLLIE_NAMESPACE,
+            plural="imagepolicies",
+            name=name,
+            body=image_policy,
+        )
+    except client.ApiException:
+        logger.exception("Failed to update ImagePolicy", name=name)
+        return False
+
+    return True
 
 
 def find_image_policies(env_name: str, app_name: str | None = None):

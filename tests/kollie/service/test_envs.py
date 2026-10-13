@@ -161,9 +161,7 @@ def test_create_app_template_not_found_raises_config_error(
 
 
 @patch("kollie.service.applications.patch_kustomization")
-@patch("kollie.service.applications.delete_image_policies")
 def test_update_branch(
-    mock_delete_image_policies,
     mock_patch_kustomization,
     mock_get_app_template_store,
     mock_create_owned_image_policy,
@@ -185,9 +183,6 @@ def test_update_branch(
             app_name="test_app",
             body={"metadata": {"annotations": {"tails.com/tracking-image-tag-prefix": "main"}}},
         )
-    )
-    mock_delete_image_policies.assert_called_once_with(
-        env_name="test_env", app_name="test_app"
     )
     mock_create_owned_image_policy.assert_called_once_with(
         env_name="test_env",
