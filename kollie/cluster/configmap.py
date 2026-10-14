@@ -24,7 +24,7 @@ def get_configmap(name: str, namespace: str = ""):
     except client.ApiException as exc:
         if exc.status == 404:
             return None
-        raise exc
+        raise
 
 
 def get_configmaps(label_filters: dict[str, str] | None = None) -> list[V1ConfigMap]:

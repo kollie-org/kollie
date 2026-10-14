@@ -85,7 +85,7 @@ def build_configmaps(environments: list[dict]) -> list[Mock]:
                     "created_at": datetime.datetime.now(datetime.UTC).strftime(
                         "%d-%m-%Y %H:%M:%S"
                     ),
-                    "lease_exclusion_window": environment["lease_exclusion_window"] if "lease_exclusion_window" in environment else None
+                    "lease_exclusion_window": environment.get("lease_exclusion_window", None)
                 }
             )
         }
