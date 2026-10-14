@@ -34,12 +34,12 @@ def watch_for_image_updates():
     api = client.CustomObjectsApi()
 
     _w = watch.Watch()
-    filters = dict(
-        group="image.toolkit.fluxcd.io",
-        version="v1",
-        namespace=KOLLIE_NAMESPACE,
-        plural="imagepolicies",
-    )
+    filters = {
+        "group": "image.toolkit.fluxcd.io",
+        "version": "v1",
+        "namespace": KOLLIE_NAMESPACE,
+        "plural": "imagepolicies",
+    }
 
     try:
         for event in _w.stream(api.list_namespaced_custom_object, **filters):

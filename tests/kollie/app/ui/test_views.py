@@ -50,7 +50,7 @@ def test_app_save(mock_apps, test_client):
     mock_apps.update_app.assert_called_once_with(
         env_name="test_env",
         app_name="test_app",
-        attributes=dict(image_tag_prefix="main"),
+        attributes={"image_tag_prefix": "main"},
     )
     assert response.status_code == 302
     assert response.headers["location"] == "/env/test_env/test_app"

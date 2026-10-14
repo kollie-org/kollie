@@ -339,7 +339,7 @@ async def app_save(
     applications.update_app(
         env_name=env_name,
         app_name=app_name,
-        attributes=dict(image_tag_prefix=image_tag_prefix),
+        attributes={"image_tag_prefix": image_tag_prefix},
     )
 
     return RedirectResponse(

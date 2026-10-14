@@ -170,7 +170,7 @@ def test_update_branch(
     mock_patch_kustomization.return_value = {"metadata": {"uid": "test_uid"}}
     mock_get_app.return_value = Mock()
 
-    update_app(env_name="test_env", app_name="test_app", attributes=dict(image_tag_prefix="main"))
+    update_app(env_name="test_env", app_name="test_app", attributes={"image_tag_prefix": "main"})
 
     mock_get_app_template_store.return_value.get_by_name.assert_called_once_with(
         app_name="test_app"
@@ -199,7 +199,7 @@ def test_update_image_tag_refix_app_template_not_found_raises_config_error(
 
     with pytest.raises(KollieException):
         update_app(
-            env_name="test_env", app_name="test_app", attributes=dict(image_tag_prefix="main")
+            env_name="test_env", app_name="test_app", attributes={"image_tag_prefix": "main"}
         )
 
 

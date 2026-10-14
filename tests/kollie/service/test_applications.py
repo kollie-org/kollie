@@ -23,7 +23,7 @@ def test_update_image_tag_prefix_app_template_not_found_raises_config_error(
 
     with pytest.raises(KollieConfigError):
         update_app(
-            env_name="test_env", app_name="test_app", attributes=dict(image_tag_prefix="main")
+            env_name="test_env", app_name="test_app", attributes={"image_tag_prefix": "main"}
         )
 
 

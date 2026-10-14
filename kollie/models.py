@@ -245,9 +245,7 @@ class EnvironmentMetadata:
             owner_email=owner,
             created_at=_datetime_from_str(body["created_at"]),
             lease_exclusion_window=(
-                body["lease_exclusion_window"]
-                if "lease_exclusion_window" in body
-                else None
+                body.get("lease_exclusion_window", None)
             ),
         )
 

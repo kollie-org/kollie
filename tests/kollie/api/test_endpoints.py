@@ -129,7 +129,7 @@ def test_environment_details(
     assert response_body["name"] == "hounslow"
 
     actual_app_names = [app["name"] for app in response_body["apps"]]
-    assert not set(actual_app_names) ^ set(["AlladinsFriedChicken", "SKVP"])
+    assert not set(actual_app_names) ^ {"AlladinsFriedChicken", "SKVP"}
 
 
 @patch("kollie.service.envs.create_env", autospec=True)
