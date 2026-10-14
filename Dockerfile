@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-FROM python:3.12-slim AS deploy
+FROM python:3.14-slim AS deploy
 
 RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
