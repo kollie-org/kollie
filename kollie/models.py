@@ -1,16 +1,16 @@
 import datetime
-from dataclasses import dataclass, field
 import json
-from typing import List, Optional
+from dataclasses import dataclass, field
+
 from kubernetes.client.models.v1_ingress import V1Ingress
 
 
 @dataclass
 class KollieAppEvent:
-    ready: Optional[bool] = False
-    type: Optional[str] = None
-    status_reason: Optional[str] = None
-    status_message: Optional[str] = None
+    ready: bool | None = False
+    type: str | None = None
+    status_reason: str | None = None
+    status_message: str | None = None
 
     @classmethod
     def from_condition(cls, condition):
@@ -33,11 +33,11 @@ class LeaseInfo:
 
     @property
     def is_expired(self) -> bool:
-        return datetime.datetime.now(datetime.timezone.utc) > self.lease_until
+        return datetime.datetime.now(datetime.UTC) > self.lease_until
 
     @property
     def time_left(self) -> datetime.timedelta:
-        return self.lease_until - datetime.datetime.now(datetime.timezone.utc)
+        return self.lease_until - datetime.datetime.now(datetime.UTC)
 
 
 @dataclass
@@ -45,11 +45,11 @@ class KollieApp:
     name: str
     env_name: str
     owner_email: str
-    image_tag: Optional[str] = None
-    image_tag_prefix: Optional[str] = None
-    events: List[KollieAppEvent] = field(default_factory=list)
-    lease_until: Optional[datetime.datetime] = None
-    urls: List[str] = field(default_factory=list)
+    image_tag: str | None = None
+    image_tag_prefix: str | None = None
+    events: list[KollieAppEvent] = field(default_factory=list)
+    lease_until: datetime.datetime | None = None
+    urls: list[str] = field(default_factory=list)
 
     @property
     def status(self) -> KollieAppEvent:
@@ -68,7 +68,7 @@ class KollieApp:
         )
 
     @property
-    def lease_info(self) -> Optional[LeaseInfo]:
+    def lease_info(self) -> LeaseInfo | None:
         if self.lease_until:
             return LeaseInfo(lease_until=self.lease_until)
 
@@ -175,7 +175,7 @@ class KollieApp:
 @dataclass
 class KollieEnvironment:
     name: str
-    apps: List[KollieApp]
+    apps: list[KollieApp]
     owner_email: str
     flux_repository_branch: str | None
     created_on: datetime.datetime | None = None
@@ -184,7 +184,7 @@ class KollieEnvironment:
     def from_kustomizations(
         cls,
         env_name: str,
-        kustomizations: List[dict],
+        kustomizations: list[dict],
         owner_email: str,
         flux_repository_branch: str | None
     ):
@@ -202,11 +202,11 @@ class KollieEnvironment:
         )
 
     @property
-    def app_names(self) -> List[str]:
+    def app_names(self) -> list[str]:
         return [app.name for app in self.apps]
 
     @property
-    def lease_until(self) -> Optional[datetime.datetime]:
+    def lease_until(self) -> datetime.datetime | None:
         """
         Returns the earliest lease_until datetime of all apps in the environment.
         """
@@ -217,7 +217,7 @@ class KollieEnvironment:
         return min(leases)
 
     @property
-    def lease_info(self) -> Optional[LeaseInfo]:
+    def lease_info(self) -> LeaseInfo | None:
         if self.lease_until:
             return LeaseInfo(lease_until=self.lease_until)
 
@@ -233,7 +233,7 @@ class EnvironmentMetadata:
     name: str
     owner_email: str
     created_at: datetime.datetime
-    lease_exclusion_window: Optional[str]
+    lease_exclusion_window: str | None
 
     @staticmethod
     def from_configmap(configmap):

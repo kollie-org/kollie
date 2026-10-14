@@ -1,7 +1,6 @@
 from .app_template import AppTemplate, ImageRepositoryRef
 from .app_template_source import AppTemplateSource, JsonFileAppTemplateSource
-from .app_template_store import get_app_template_store, AppTemplateStore
-
+from .app_template_store import AppTemplateStore, get_app_template_store
 
 all = [
     AppTemplate,

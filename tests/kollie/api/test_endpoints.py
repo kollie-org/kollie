@@ -1,13 +1,12 @@
-import os
 import json
-
-from unittest.mock import patch, mock_open
+import os
+from unittest.mock import mock_open, patch
 
 from freezegun import freeze_time
+from kubernetes.client.models import V1ConfigMap, V1ObjectMeta
 
 from kollie.models import KollieEnvironment
 from tests.kollie.helpers import build_configmaps, build_kustomization
-from kubernetes.client.models import V1ConfigMap, V1ObjectMeta
 
 
 def test_ping(test_client):

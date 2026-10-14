@@ -1,18 +1,17 @@
-import pytest
 import os
-
-from datetime import datetime, timezone
-from freezegun import freeze_time
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, Mock, patch
 
+import pytest
+from freezegun import freeze_time
+
+from kollie.cluster.kustomization_request import PatchKustomizationRequest
 from kollie.exceptions import KollieConfigError, KollieException
 from kollie.models import KollieEnvironment, _datetime_from_str
 from kollie.persistence.app_bundle import AppBundle
 from kollie.persistence.app_template_store import AppTemplateStore
 from kollie.service.applications import create_app, update_app
-
-from kollie.service.envs import create_env, install_bundle, extend_lease
-from kollie.cluster.kustomization_request import PatchKustomizationRequest
+from kollie.service.envs import create_env, extend_lease, install_bundle
 from tests.kollie.helpers import MagicAppTemplateSource, build_configmaps
 
 
@@ -245,13 +244,13 @@ def test_update_image_tag_refix_app_template_not_found_raises_config_error(
         ),
         pytest.param(
             "2024-01-19T15:03:08.000+00:00",
-            datetime(2024, 1, 19, 15, 3, 8, tzinfo=timezone.utc),
+            datetime(2024, 1, 19, 15, 3, 8, tzinfo=UTC),
             False,
             id="ISO 8601 format with timezone",
         ),
         pytest.param(
             "2024-01-19T15:03:08.000Z",
-            datetime(2024, 1, 19, 15, 3, 8, tzinfo=timezone.utc),
+            datetime(2024, 1, 19, 15, 3, 8, tzinfo=UTC),
             False,
             id="ISO 8601 format with Z also seems to work",
         ),

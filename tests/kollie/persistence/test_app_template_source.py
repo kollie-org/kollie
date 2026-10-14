@@ -1,10 +1,9 @@
 import json
+from unittest.mock import mock_open, patch
 
-from unittest.mock import patch, mock_open
 import pytest
 
-from kollie.persistence import JsonFileAppTemplateSource
-from kollie.persistence import AppTemplate
+from kollie.persistence import AppTemplate, JsonFileAppTemplateSource
 
 
 def test_json_file_app_template_source_load():

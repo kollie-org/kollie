@@ -1,7 +1,9 @@
 from unittest.mock import Mock, patch
+
 import pytest
-from kollie.persistence.app_template import AppTemplate
+
 from kollie.exceptions import KollieConfigError
+from kollie.persistence.app_template import AppTemplate
 from kollie.service.applications import create_app, update_app
 from kollie.service.envs import install_bundle
 from tests.kollie.helpers import build_configmaps

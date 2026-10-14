@@ -1,7 +1,7 @@
-import time
 import threading
-import structlog
+import time
 
+import structlog
 
 logger = structlog.get_logger(__name__)
 

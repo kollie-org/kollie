@@ -1,9 +1,9 @@
 import typer
 
 from kollie.cluster.authentication import connect_to_cluster
-from kollie.logging_config import configure_logger
-from kollie.heartbeat import start_heartbeat
 from kollie.cluster.image_update_automation import watch_for_image_updates
+from kollie.heartbeat import start_heartbeat
+from kollie.logging_config import configure_logger
 from kollie.service import envs
 
 app = typer.Typer()

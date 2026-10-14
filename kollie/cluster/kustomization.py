@@ -1,13 +1,12 @@
-from typing import Optional
-from kubernetes import client
+
 import structlog
+from kubernetes import client
 
 from kollie.exceptions import KollieKustomizationException
 
-from .interfaces import AppTemplate
 from .constants import KOLLIE_NAMESPACE
+from .interfaces import AppTemplate
 from .kustomization_request import CreateKustomizationRequest, PatchKustomizationRequest
-
 
 logger = structlog.get_logger(__name__)
 
@@ -18,7 +17,7 @@ def create_kustomization(
     app_template: AppTemplate,
     owner_email: str,
     owner_uid: str,
-    lease_exclusion_window: Optional[str],
+    lease_exclusion_window: str | None,
     git_repository_name: str | None = None,
 ) -> dict:
     """Create a kustomization in the kollie namespace.
@@ -107,7 +106,7 @@ def patch_kustomization(request: PatchKustomizationRequest) -> dict:
         )
 
 
-def delete_kustomizations(env_name: str, app_name: Optional[str] = None) -> None:
+def delete_kustomizations(env_name: str, app_name: str | None = None) -> None:
     """
     raises ApiException if there is an error deleting the kustomization
     """
@@ -126,7 +125,7 @@ def delete_kustomizations(env_name: str, app_name: Optional[str] = None) -> None
 
 
 def get_kustomizations(
-    env_name: Optional[str] = None, app_name: Optional[str] = None
+    env_name: str | None = None, app_name: str | None = None
 ) -> list:
     """
     Returns a list of kustomizations in the "kollie" namespace,
