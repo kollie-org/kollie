@@ -1,15 +1,15 @@
 from copy import deepcopy
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
 
 from freezegun import freeze_time
 from pytest import fixture
 
+from kollie.cluster.constants import KOLLIE_NAMESPACE
 from kollie.cluster.kustomization import (
-    get_kustomizations,
     create_kustomization,
     delete_kustomizations,
+    get_kustomizations,
 )
-from kollie.cluster.constants import KOLLIE_NAMESPACE
 
 DEFAULT_REQUST_BODY = {
     "apiVersion": "kustomize.toolkit.fluxcd.io/v1",

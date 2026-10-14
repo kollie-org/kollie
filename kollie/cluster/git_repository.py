@@ -1,12 +1,14 @@
+import structlog
 from kubernetes import client
 from kubernetes.client.exceptions import ApiException
-import structlog
 
-from .git_repository_request import CreateGitRepositoryRequest
-from .constants import DEFAULT_FLUX_REPOSITORY, KOLLIE_NAMESPACE
 from kollie.exceptions import (
-    CreateCustomObjectsApiException, GetCustomObjectsApiException
+    CreateCustomObjectsApiException,
+    GetCustomObjectsApiException,
 )
+
+from .constants import DEFAULT_FLUX_REPOSITORY, KOLLIE_NAMESPACE
+from .git_repository_request import CreateGitRepositoryRequest
 
 logger = structlog.get_logger(__name__)
 

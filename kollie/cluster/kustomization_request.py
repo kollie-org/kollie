@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from typing import Dict, Final, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Final
 
 from kubernetes.client import V1ObjectMeta, V1OwnerReference
 
 from kollie.cluster.interfaces import AppTemplate
-from .constants import KOLLIE_NAMESPACE, KOLLIE_COMMON_SUBSTITUTIONS
 
+from .constants import KOLLIE_COMMON_SUBSTITUTIONS, KOLLIE_NAMESPACE
 
 DEFAULT_LEASE_DAYS_EXTEND: Final[int] = 0
 DEFAULT_LEASE_HOUR_EXTEND: Final[int] = 19
@@ -21,7 +21,7 @@ class CreateKustomizationRequest:
     image_tag_prefix: str
     owner_email: str
     owner_uid: str
-    lease_exclusion_window: Optional[str]
+    lease_exclusion_window: str | None
     git_repository_name: str | None = None
 
     @property
@@ -93,7 +93,7 @@ class PatchKustomizationRequest:
 
     env_name: str
     app_name: str
-    body: Dict = field(default_factory=dict)
+    body: dict = field(default_factory=dict)
 
     @property
     def kustomization_name(self) -> str:
@@ -189,6 +189,6 @@ def calculate_uptime_window_string(
     if days < 0 or days > 5:
         raise ValueError("Days must be between 0 and 5.")
 
-    d = datetime.now(timezone.utc).replace(hour=hour, minute=0, second=0, microsecond=0) + timedelta(days=days)
-    now_seconds = datetime.now(timezone.utc).replace(microsecond=0)
+    d = datetime.now(UTC).replace(hour=hour, minute=0, second=0, microsecond=0) + timedelta(days=days)
+    now_seconds = datetime.now(UTC).replace(microsecond=0)
     return f"{now_seconds.isoformat()}-{d.isoformat()}"

@@ -1,9 +1,10 @@
 import pathlib
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from kollie.logging_config import configure_logger
 from kollie.cluster.authentication import connect_to_cluster
+from kollie.logging_config import configure_logger
 
 from .api import endpoints
 from .ui import views

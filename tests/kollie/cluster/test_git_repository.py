@@ -1,15 +1,19 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from kubernetes.client.exceptions import ApiException
 
 from kollie.cluster.constants import DEFAULT_FLUX_REPOSITORY, KOLLIE_NAMESPACE
 from kollie.cluster.git_repository import (
-    create_git_repository, get_git_repository, GROUP, VERSION,
-    OBJECT_PLURAL
+    GROUP,
+    OBJECT_PLURAL,
+    VERSION,
+    create_git_repository,
+    get_git_repository,
 )
 from kollie.exceptions import (
-    CreateCustomObjectsApiException, GetCustomObjectsApiException
+    CreateCustomObjectsApiException,
+    GetCustomObjectsApiException,
 )
 
 

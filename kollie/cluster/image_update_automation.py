@@ -13,13 +13,12 @@ Design:
 """
 
 # Path: kollie/cluster/image_update_automation.py
-from kollie.cluster.constants import KOLLIE_NAMESPACE
-from kubernetes import client, watch
 import structlog
+from kubernetes import client, watch
+
+from kollie.cluster.constants import KOLLIE_NAMESPACE
 from kollie.cluster.image_policy import find_image_policies
-
 from kollie.service import applications
-
 
 logger = structlog.get_logger(__name__)
 

@@ -1,14 +1,13 @@
 from dataclasses import asdict
 
-from kubernetes import client
 import structlog
+from kubernetes import client
 
 from kollie.exceptions import KollieImagePolicyException
 
 from .constants import KOLLIE_NAMESPACE
-from .interfaces import AppTemplate
 from .image_policy_spec import LatestTimestampImagePolicySpec
-
+from .interfaces import AppTemplate
 
 logger = structlog.get_logger(__name__)
 

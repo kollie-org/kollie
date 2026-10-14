@@ -1,6 +1,8 @@
 from unittest import mock
 from unittest.mock import patch
+
 import pytest
+
 from kollie.cluster.image_update_automation import (
     handle_image_policy_event,
     watch_for_image_updates,
