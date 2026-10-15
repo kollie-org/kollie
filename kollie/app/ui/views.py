@@ -80,9 +80,12 @@ def _select_environments_owned_by(
 
 
 @router.get("/")
-async def environment_index(request: Request, owner: str | None = None):
+async def environment_index(
+    request: Request, owner: str | None = None, q: str | None = None
+):
     running_environments = envs.list_envs(owner_email=owner)
     current_user = userinfo(request)
+    search_term = q or ""
 
     my_environments: list[EnvironmentMetadata] | None = None
     if current_user is not None:
@@ -90,12 +93,16 @@ async def environment_index(request: Request, owner: str | None = None):
             environments=running_environments, owner_email=current_user.email
         )
 
+    # Filtering by search_term happens in the browser (static/environment_search.js)
+    # so the full list is always rendered; the term is only echoed into the
+    # search input so that shared links and reloads restore the same view.
     return templates.TemplateResponse(
         request,
         "/index.jinja2",
         {
             "my_environments": my_environments,
             "all_environments": running_environments,
+            "search_term": search_term,
         },
     )
 

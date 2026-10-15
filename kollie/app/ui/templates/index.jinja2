@@ -6,7 +6,7 @@ Kollie environments
 
 {% block content %}
 {% macro environment_row(environment) %}
-<tr>
+<tr data-environment-name="{{ environment.name }}" data-owner-email="{{ environment.owner_email }}">
     <td>
         <a href="{{ relative_url_for('env_detail', testenv_name=environment.name) }}">{{
             environment.name }}</a>
@@ -25,9 +25,17 @@ Kollie environments
 </tr>
 {% endmacro %}
 
-{% macro environment_table(environments, empty_message) %}
-<table class="table">
+{% macro environment_table(environments, empty_message, table_id=none) %}
+<table class="table" {% if table_id %}id="{{ table_id }}"{% endif %}>
+    <colgroup>
+        <col style="width: 69%">
+        <col style="width: 18%">
+        <col style="width: 13%">
+    </colgroup>
     <thead>
+        {% if caller %}
+        {{ caller() }}
+        {% endif %}
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Created</th>
@@ -72,7 +80,33 @@ Kollie environments
 
 <div class="row">
     <div class="col mt-2">
-        {{ environment_table(all_environments, "No running environments") }}
+        <form id="environment-search-form" method="get" action="{{ relative_url_for('environment_index') }}"
+            role="search">
+            {% if request.query_params.owner %}
+            <input type="hidden" name="owner" value="{{ request.query_params.owner }}">
+            {% endif %}
+        </form>
+        {% call environment_table(all_environments, "No running environments", table_id="all-environments-table") %}
+        <tr>
+            <td colspan="2" class="pb-3 border-0">
+                <label class="visually-hidden" for="environment-search-input">Search environments</label>
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary pe-none"
+                        aria-hidden="true"></i>
+                    <input id="environment-search-input" form="environment-search-form" class="form-control ps-5"
+                        type="search" name="q" value="{{ search_term }}"
+                        placeholder="Search by environment name or owner" autocomplete="off">
+                </div>
+            </td>
+            <td class="pb-3 border-0">
+                <button form="environment-search-form" class="btn btn-outline-secondary text-white"
+                    type="submit">Search</button>
+            </td>
+        </tr>
+        {% endcall %}
+        <p id="environment-search-no-match" class="text-secondary d-none">No environments match your search</p>
     </div>
 </div>
+
+<script src="{{ url_for('static', path='/environment_search.js') }}"></script>
 {% endblock content %}

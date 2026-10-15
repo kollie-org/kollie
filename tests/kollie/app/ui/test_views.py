@@ -221,3 +221,27 @@ def test_shows_an_empty_own_section_when_the_user_owns_nothing(mock_envs, test_c
     assert response.context["my_environments"] == []
     assert response.context["all_environments"] == [environment_a]
     assert "You have no running environments" in response.text
+
+
+@patch("kollie.app.ui.views.envs", autospec=True)
+def test_echoes_the_search_term_without_filtering_on_the_server(mock_envs, test_client):
+    """
+    GIVEN running environments
+    WHEN the environment index is requested
+    AND a search term is supplied in the query string
+    THEN every environment is still rendered
+    AND the search term is pre-filled into the search input
+    """
+    # Given
+    environment_a = build_environment_metadata("pn-960-cache", "someone@owner.com")
+    environment_b = build_environment_metadata("an-282", "another@owner.com")
+    mock_envs.list_envs.return_value = [environment_a, environment_b]
+
+    # When
+    response = test_client.get("/", params={"q": "cache"})
+
+    # Then
+    assert response.status_code == 200
+    assert response.context["all_environments"] == [environment_a, environment_b]
+    assert response.context["search_term"] == "cache"
+    assert 'value="cache"' in response.text
