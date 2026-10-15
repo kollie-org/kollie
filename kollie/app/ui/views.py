@@ -9,6 +9,7 @@ from kollie.app.auth import UserInfo, authenticated_user, userinfo
 from kollie.app.ui.templatefilters import humanise_date_filter
 from kollie.app.ui.viewmodels import render_resources
 from kollie.exceptions import KollieException
+from kollie.models import EnvironmentMetadata
 from kollie.service import envs
 from kollie.persistence import get_app_template_store
 from kollie.service import applications
@@ -63,11 +64,39 @@ def _init_templates() -> Jinja2Templates:
 templates = _init_templates()
 
 
+def _select_environments_owned_by(
+    *, environments: list[EnvironmentMetadata], owner_email: str
+) -> list[EnvironmentMetadata]:
+    """
+    Keeps environments owned by owner_email, preserving the incoming order.
+    """
+    owned_environments: list[EnvironmentMetadata] = []
+
+    for environment in environments:
+        if environment.owner_email == owner_email:
+            owned_environments.append(environment)
+
+    return owned_environments
+
+
 @router.get("/")
 async def environment_index(request: Request, owner: str | None = None):
     running_environments = envs.list_envs(owner_email=owner)
+    current_user = userinfo(request)
+
+    my_environments: list[EnvironmentMetadata] | None = None
+    if current_user is not None:
+        my_environments = _select_environments_owned_by(
+            environments=running_environments, owner_email=current_user.email
+        )
+
     return templates.TemplateResponse(
-        request, "/index.jinja2", {"environments": running_environments}
+        request,
+        "/index.jinja2",
+        {
+            "my_environments": my_environments,
+            "all_environments": running_environments,
+        },
     )
 
 
