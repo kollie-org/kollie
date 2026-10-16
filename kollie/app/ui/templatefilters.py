@@ -16,7 +16,7 @@ def humanise_date_filter(date: datetime.datetime) -> str:
     """
     try:
         return arrow.get(date).humanize()
-    except Exception:
+    except (AttributeError, TypeError, ValueError):
         # mypy isn't able to enforce type checking on this function when it's
         # called from a Jinja template, so we handle that here
         return "unknown"

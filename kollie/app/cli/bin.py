@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import typer
 
 from kollie.cluster.authentication import connect_to_cluster
