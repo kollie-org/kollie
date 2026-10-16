@@ -10,7 +10,6 @@ from kollie.app.ui.templatefilters import humanise_date_filter
 from kollie.app.ui.viewmodels import render_resources
 from kollie.exceptions import KollieException
 from kollie.models import EnvironmentMetadata
-from kollie.service import envs
 from kollie.persistence import get_app_template_store
 from kollie.service import applications, envs
 
