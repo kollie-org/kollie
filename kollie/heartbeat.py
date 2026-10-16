@@ -19,7 +19,7 @@ def update_alive_file():
                 f.write(str(time.time()))
                 logger.info(f"Updated {ALIVE_FILE}")
             time.sleep(UPDATE_INTERVAL)
-        except Exception as e:
+        except OSError as e:
             logger.error(f"Failed to update {ALIVE_FILE}: {e}")
             break
 

@@ -32,6 +32,9 @@ pytest = "*"
 ruff = "*"
 mypy = "*"
 
+[tool.ruff]
+extend-exclude = ["tests"]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
