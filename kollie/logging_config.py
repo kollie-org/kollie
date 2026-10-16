@@ -1,6 +1,7 @@
-import os
-import structlog
 import logging
+import os
+
+import structlog
 
 
 def configure_logger():

@@ -1,4 +1,5 @@
 import pytest
+
 from kollie.app.ui.viewmodels import IngressView, render_resources
 from kollie.models import KollieApp
 

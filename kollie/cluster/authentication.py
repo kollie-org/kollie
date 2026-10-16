@@ -5,7 +5,6 @@ from kubernetes import config
 
 from kollie.constants import LOCAL_STAGE, TEST_STAGE
 
-
 logger = structlog.get_logger(__name__)
 
 
@@ -23,7 +22,7 @@ def connect_to_cluster():
         else:
             _connect_using_local_kubeconfig(logger)
     except (TypeError, config.ConfigException) as e:
-        logger.error(f"Unable to connect to Kubernetes Cluster: {str(e)}")
+        logger.error(f"Unable to connect to Kubernetes Cluster: {e!s}")
         raise
 
 

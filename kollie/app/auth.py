@@ -22,9 +22,9 @@ OAuth2 proxy put in front of it to obtain a token which is then included in the
 header when making calls to the API.
 """
 
-from dataclasses import dataclass
 import logging
 import os
+from dataclasses import dataclass
 
 from fastapi import HTTPException, Request, status
 

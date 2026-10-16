@@ -1,7 +1,8 @@
 import os
 from unittest import mock
-from pytest import fixture
+
 from fastapi.testclient import TestClient
+from pytest import fixture
 
 from kollie.app.main import create_app
 

@@ -1,17 +1,14 @@
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
 from kollie import heartbeat
 
 
 @patch("kollie.heartbeat.open", new_callable=mock_open)
 @patch("time.time", return_value=12345)
-@patch("time.sleep", side_effect=Exception("exit the loop"))
+@patch("time.sleep", side_effect=OSError("exit the loop"))
 @patch("kollie.heartbeat.logger")
 def test_update_alive_file(mock_logger, mock_sleep, mock_time, mock_open):
-    try:
-        heartbeat.update_alive_file()
-    except Exception:
-        # Raise the exception to exit the loop
-        pass
+    heartbeat.update_alive_file()
     mock_open().write.assert_called_once_with("12345")
     mock_time.assert_called_once()
     mock_sleep.assert_called_once_with(60)

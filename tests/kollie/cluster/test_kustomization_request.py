@@ -1,17 +1,17 @@
-import pytest
-
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
+import pytest
 from freezegun import freeze_time
+
+from kollie.cluster.constants import KOLLIE_NAMESPACE
 from kollie.cluster.kustomization_request import (
-    calculate_uptime_window_string,
-    CreateKustomizationRequest,
-    PatchKustomizationRequest,
     DEFAULT_LEASE_DAYS_EXTEND,
     DEFAULT_LEASE_HOUR_EXTEND,
+    CreateKustomizationRequest,
+    PatchKustomizationRequest,
+    calculate_uptime_window_string,
 )
-from kollie.cluster.constants import KOLLIE_NAMESPACE
 
 
 @freeze_time("2024-01-01")
@@ -177,7 +177,7 @@ def test_all_setters():
 @freeze_time("2024-12-24")
 def test_calculate_uptime_window_default_parameters():
     delta = timedelta(days=DEFAULT_LEASE_DAYS_EXTEND, hours=DEFAULT_LEASE_HOUR_EXTEND)
-    expected_time = (datetime.now(timezone.utc).replace(microsecond=0) + delta).isoformat()
+    expected_time = (datetime.now(UTC).replace(microsecond=0) + delta).isoformat()
     assert calculate_uptime_window_string()[-25:] == expected_time
 
 @freeze_time("2024-12-24")

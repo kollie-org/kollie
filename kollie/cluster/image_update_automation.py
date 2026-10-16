@@ -13,13 +13,13 @@ Design:
 """
 
 # Path: kollie/cluster/image_update_automation.py
-from kollie.cluster.constants import KOLLIE_NAMESPACE
-from kubernetes import client, watch
 import structlog
+from kubernetes import client, watch
+
+from kollie.cluster.constants import KOLLIE_NAMESPACE
 from kollie.cluster.image_policy import find_image_policies
-
+from kollie.exceptions import KollieException
 from kollie.service import applications
-
 
 logger = structlog.get_logger(__name__)
 
@@ -35,12 +35,12 @@ def watch_for_image_updates():
     api = client.CustomObjectsApi()
 
     _w = watch.Watch()
-    filters = dict(
-        group="image.toolkit.fluxcd.io",
-        version="v1",
-        namespace=KOLLIE_NAMESPACE,
-        plural="imagepolicies",
-    )
+    filters = {
+        "group": "image.toolkit.fluxcd.io",
+        "version": "v1",
+        "namespace": KOLLIE_NAMESPACE,
+        "plural": "imagepolicies",
+    }
 
     try:
         for event in _w.stream(api.list_namespaced_custom_object, **filters):
@@ -56,7 +56,7 @@ def watch_for_image_updates():
                 )
                 continue
 
-            except Exception as e:
+            except (KollieException, KeyError) as e:
                 logger.error(
                     "image_update_automation.failed", error=e, image_policy_event=event
                 )

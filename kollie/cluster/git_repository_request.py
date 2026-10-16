@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from kubernetes.client import V1ObjectMeta, V1OwnerReference
 
-from .constants import KOLLIE_NAMESPACE, DEFAULT_FLUX_REPOSITORY
+from .constants import DEFAULT_FLUX_REPOSITORY, KOLLIE_NAMESPACE
 
 
 @dataclass

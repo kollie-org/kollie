@@ -1,12 +1,10 @@
 import datetime
 import json
-from typing import Dict, List, Optional
-from kollie.cluster.kustomization import KOLLIE_NAMESPACE
-
-from kubernetes.client.models.v1_config_map import V1ConfigMap
-
 
 from kubernetes import client
+from kubernetes.client.models.v1_config_map import V1ConfigMap
+
+from kollie.cluster.kustomization import KOLLIE_NAMESPACE
 
 
 def get_configmap(name: str, namespace: str = ""):
@@ -26,10 +24,10 @@ def get_configmap(name: str, namespace: str = ""):
     except client.ApiException as exc:
         if exc.status == 404:
             return None
-        raise exc
+        raise
 
 
-def get_configmaps(label_filters: Dict[str, str] | None = None) -> List[V1ConfigMap]:
+def get_configmaps(label_filters: dict[str, str] | None = None) -> list[V1ConfigMap]:
     """
     Get a list of configmaps from the cluster.
 
@@ -57,8 +55,8 @@ def get_configmaps(label_filters: Dict[str, str] | None = None) -> List[V1Config
 def create_env_configmap(
     env_name: str,
     owner_email: str,
-    lease_exclusion_window: Optional[str],
-    apps: List[str] | None = None,
+    lease_exclusion_window: str | None,
+    apps: list[str] | None = None,
 ):
     """
     Create a configmap in the cluster.

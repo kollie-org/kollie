@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from kollie.cluster.constants import DEFAULT_FLUX_REPOSITORY
 
 

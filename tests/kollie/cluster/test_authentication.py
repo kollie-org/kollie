@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from kollie.cluster.authentication import connect_to_cluster
-from kollie.constants import LOCAL_STAGE, TEST_STAGE, PROD_STAGE
+from kollie.constants import LOCAL_STAGE, PROD_STAGE, TEST_STAGE
 
 
 @pytest.mark.parametrize(
@@ -28,6 +30,5 @@ def test_connect_to_cluster_test_stage():
 def test_connect_to_cluster_exception():
     with patch("os.environ.get", return_value=PROD_STAGE), patch(
         "kollie.cluster.authentication._connect_in_cluster_mode", side_effect=TypeError
-    ):
-        with pytest.raises(TypeError):
-            connect_to_cluster()
+    ), pytest.raises(TypeError):
+        connect_to_cluster()

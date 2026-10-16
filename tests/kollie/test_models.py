@@ -1,6 +1,7 @@
 import pytest
-from kollie.models import KollieAppEvent, KollieApp, KollieEnvironment
 from kubernetes.client.models.v1_ingress import V1Ingress
+
+from kollie.models import KollieApp, KollieAppEvent, KollieEnvironment
 
 
 @pytest.fixture
