@@ -22,9 +22,10 @@ def test_connect_to_cluster(stage, expected_call):
 
 
 def test_connect_to_cluster_test_stage():
-    with patch("os.environ.get", return_value=TEST_STAGE):
-        with pytest.raises(RuntimeError):
-            connect_to_cluster()
+    with patch("os.environ.get", return_value=TEST_STAGE), pytest.raises(
+        RuntimeError
+    ):
+        connect_to_cluster()
 
 
 def test_connect_to_cluster_exception():

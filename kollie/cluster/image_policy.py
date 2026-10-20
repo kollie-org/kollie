@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from typing import cast
 
 import structlog
 from kubernetes import client
@@ -110,12 +111,15 @@ def _update_image_policy(
             it is being deleted.
     """
     try:
-        existing = api.get_namespaced_custom_object(
-            group="image.toolkit.fluxcd.io",
-            version="v1",
-            namespace=KOLLIE_NAMESPACE,
-            plural="imagepolicies",
-            name=name,
+        existing = cast(
+            dict,
+            api.get_namespaced_custom_object(
+                group="image.toolkit.fluxcd.io",
+                version="v1",
+                namespace=KOLLIE_NAMESPACE,
+                plural="imagepolicies",
+                name=name,
+            ),
         )
 
         if existing["metadata"].get("deletionTimestamp"):

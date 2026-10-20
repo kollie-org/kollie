@@ -49,13 +49,15 @@ def list_envs(owner_email: str | None = None) -> list[EnvironmentMetadata]:
         if not env_configmap.data or env_configmap.metadata is None:
             continue
 
+        annotations = env_configmap.metadata.annotations or {}
+
         # This is an inefficient way to filter by owner. It is done this way
         # because it's not possible to filter by annotation in Kubernetes
         # We are using annotations for the owner email because labels don't
         # support the @ symbol
         if (
             owner_email is not None
-            and env_configmap.metadata.annotations["tails.com/owner"] != owner_email
+            and annotations.get("tails.com/owner") != owner_email
         ):
             continue
 

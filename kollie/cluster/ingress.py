@@ -2,7 +2,7 @@
 from kubernetes import client
 
 
-def get_ingress(env_name: str, app_name: str) -> client.V1IngressList | None:
+def get_ingress(env_name: str, app_name: str) -> client.V1Ingress | None:
     """
     Get an ingress from the cluster with specific labels.
 

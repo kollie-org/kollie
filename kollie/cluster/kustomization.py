@@ -1,4 +1,6 @@
 
+from typing import cast
+
 import structlog
 from kubernetes import client
 
@@ -50,12 +52,15 @@ def create_kustomization(
     )
 
     try:
-        response = v1.create_namespaced_custom_object(
-            group="kustomize.toolkit.fluxcd.io",
-            version="v1",
-            namespace=KOLLIE_NAMESPACE,
-            plural="kustomizations",
-            body=request.body,
+        response = cast(
+            dict,
+            v1.create_namespaced_custom_object(
+                group="kustomize.toolkit.fluxcd.io",
+                version="v1",
+                namespace=KOLLIE_NAMESPACE,
+                plural="kustomizations",
+                body=request.body,
+            ),
         )
 
         return response
@@ -83,13 +88,16 @@ def patch_kustomization(request: PatchKustomizationRequest) -> dict:
     v1 = client.CustomObjectsApi()
 
     try:
-        response = v1.patch_namespaced_custom_object(
-            group="kustomize.toolkit.fluxcd.io",
-            version="v1",
-            namespace=KOLLIE_NAMESPACE,
-            plural="kustomizations",
-            name=request.kustomization_name,
-            body=request.body,
+        response = cast(
+            dict,
+            v1.patch_namespaced_custom_object(
+                group="kustomize.toolkit.fluxcd.io",
+                version="v1",
+                namespace=KOLLIE_NAMESPACE,
+                plural="kustomizations",
+                name=request.kustomization_name,
+                body=request.body,
+            ),
         )
 
         return response
@@ -148,12 +156,15 @@ def get_kustomizations(
     if app_name:
         labels.append(f"tails-app-name={app_name}")
 
-    kustomizations = v1.list_namespaced_custom_object(
-        group="kustomize.toolkit.fluxcd.io",
-        version="v1",
-        namespace=KOLLIE_NAMESPACE,
-        plural="kustomizations",
-        label_selector=",".join(labels),
+    kustomizations = cast(
+        dict,
+        v1.list_namespaced_custom_object(
+            group="kustomize.toolkit.fluxcd.io",
+            version="v1",
+            namespace=KOLLIE_NAMESPACE,
+            plural="kustomizations",
+            label_selector=",".join(labels),
+        ),
     )
 
     return kustomizations.get("items", [])
