@@ -50,7 +50,7 @@ def test_app_save(mock_apps, test_client):
     mock_apps.update_app.assert_called_once_with(
         env_name="test_env",
         app_name="test_app",
-        attributes=dict(image_tag_prefix="main"),
+        attributes={"image_tag_prefix": "main"},
     )
     assert response.status_code == 302
     assert response.headers["location"] == "/env/test_env/test_app"
@@ -136,7 +136,7 @@ def build_environment_metadata(name: str, owner_email: str) -> EnvironmentMetada
     return EnvironmentMetadata(
         name=name,
         owner_email=owner_email,
-        created_at=datetime.datetime(2024, 1, 1, tzinfo=datetime.timezone.utc),
+        created_at=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
         lease_exclusion_window=None,
     )
 

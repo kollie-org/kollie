@@ -1,6 +1,8 @@
-from unittest.mock import mock_open, patch
-import pytest
 from dataclasses import dataclass
+from unittest.mock import mock_open, patch
+
+import pytest
+
 from kollie.persistence.item_source import JsonItemSource
 
 

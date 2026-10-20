@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import os
-from typing import Optional, Sequence
+from collections.abc import Sequence
+from dataclasses import dataclass
 
 from kollie.persistence.item_source import ItemSource, JsonItemSource
 
@@ -16,7 +16,7 @@ class AppBundleStore:
     def __init__(self, app_bundle_source: ItemSource[AppBundle]):
         self._bundles = {bundle.name: bundle for bundle in app_bundle_source.load()}
 
-    def get_bundle(self, name: str) -> Optional[AppBundle]:
+    def get_bundle(self, name: str) -> AppBundle | None:
         return self._bundles.get(name)
 
     def get_all_bundles(self) -> list[AppBundle]:

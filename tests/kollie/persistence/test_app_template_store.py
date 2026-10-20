@@ -1,9 +1,14 @@
-import pytest
 from unittest.mock import Mock
 
-from kollie.persistence import JsonFileAppTemplateSource
-from kollie.persistence import AppTemplateStore, get_app_template_store
-from kollie.persistence import AppTemplate, ImageRepositoryRef
+import pytest
+
+from kollie.persistence import (
+    AppTemplate,
+    AppTemplateStore,
+    ImageRepositoryRef,
+    JsonFileAppTemplateSource,
+    get_app_template_store,
+)
 
 
 @pytest.fixture

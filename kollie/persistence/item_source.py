@@ -1,5 +1,5 @@
 import json
-from typing import Generic, Protocol, Type, TypeVar
+from typing import Generic, Protocol, TypeVar
 
 ItemType = TypeVar("ItemType")
 
@@ -11,7 +11,7 @@ class JsonItemSource(Generic[ItemType]):
 
     def __init__(
         self,
-        item_type: Type[ItemType],
+        item_type: type[ItemType],
         json_path: str | None = None,
         json_str: str | None = None,
     ) -> None:

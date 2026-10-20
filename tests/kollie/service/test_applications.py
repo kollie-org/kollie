@@ -1,7 +1,9 @@
 from unittest.mock import Mock, patch
+
 import pytest
-from kollie.persistence.app_template import AppTemplate
+
 from kollie.exceptions import KollieConfigError
+from kollie.persistence.app_template import AppTemplate
 from kollie.service.applications import create_app, update_app
 from kollie.service.envs import install_bundle
 from tests.kollie.helpers import build_configmaps
@@ -21,7 +23,7 @@ def test_update_image_tag_prefix_app_template_not_found_raises_config_error(
 
     with pytest.raises(KollieConfigError):
         update_app(
-            env_name="test_env", app_name="test_app", attributes=dict(image_tag_prefix="main")
+            env_name="test_env", app_name="test_app", attributes={"image_tag_prefix": "main"}
         )
 
 

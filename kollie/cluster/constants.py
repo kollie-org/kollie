@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 KOLLIE_NAMESPACE = os.environ.get("KOLLIE_NAMESPACE", "kollie")
 

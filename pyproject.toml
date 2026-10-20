@@ -9,7 +9,7 @@ authors = [
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.14"
 uvicorn = { extras = ["standard"], version = "*" }
 kubernetes = "*"
 fastapi = "*"
@@ -31,6 +31,9 @@ pytest-mock = "*"
 pytest = "*"
 ruff = "*"
 mypy = "*"
+
+[tool.ruff]
+extend-exclude = ["tests"]
 
 [build-system]
 requires = ["poetry-core"]

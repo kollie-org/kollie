@@ -1,7 +1,5 @@
-from typing import List, Optional
 
 import structlog
-
 from environs import Env
 
 from kollie.cluster.configmap import (
@@ -33,7 +31,7 @@ ENV_NAME_LABEL = "tails-app-environment"
 logger = structlog.get_logger(__name__)
 
 
-def list_envs(owner_email: str | None = None) -> List[EnvironmentMetadata]:
+def list_envs(owner_email: str | None = None) -> list[EnvironmentMetadata]:
     """
     Get a list of environment names stored in configmaps.
 
@@ -51,13 +49,15 @@ def list_envs(owner_email: str | None = None) -> List[EnvironmentMetadata]:
         if not env_configmap.data or env_configmap.metadata is None:
             continue
 
+        annotations = env_configmap.metadata.annotations or {}
+
         # This is an inefficient way to filter by owner. It is done this way
         # because it's not possible to filter by annotation in Kubernetes
         # We are using annotations for the owner email because labels don't
         # support the @ symbol
         if (
             owner_email is not None
-            and env_configmap.metadata.annotations["tails.com/owner"] != owner_email
+            and annotations.get("tails.com/owner") != owner_email
         ):
             continue
 
@@ -70,7 +70,7 @@ def list_envs(owner_email: str | None = None) -> List[EnvironmentMetadata]:
     return envs
 
 
-def get_env(env_name: str) -> Optional[KollieEnvironment]:
+def get_env(env_name: str) -> KollieEnvironment | None:
     """
     Returns a KollieEnvironment for a given environment name.
 
@@ -101,7 +101,7 @@ def get_env(env_name: str) -> Optional[KollieEnvironment]:
     return env
 
 
-def get_available_apps(env: KollieEnvironment) -> List[str]:
+def get_available_apps(env: KollieEnvironment) -> list[str]:
     """
     Returns a list of apps that can be added to an environment.
 

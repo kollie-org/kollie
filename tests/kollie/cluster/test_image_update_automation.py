@@ -1,6 +1,7 @@
-from unittest import mock
 from unittest.mock import patch
+
 import pytest
+
 from kollie.cluster.image_update_automation import (
     handle_image_policy_event,
     watch_for_image_updates,
@@ -194,9 +195,8 @@ def test_watch_for_image_updates(mock_handle_event, mock_api, mock_watch):
 @patch("kollie.cluster.image_update_automation.watch.Watch")
 @patch("kollie.cluster.image_update_automation.client.CustomObjectsApi")
 @patch("kollie.cluster.image_update_automation.handle_image_policy_event")
-@patch("kollie.cluster.image_update_automation.logger")
 def test_watch_for_image_updates_unhandled_exception(
-    mock_logger, mock_handle_event, mock_api, mock_watch
+    mock_handle_event, mock_api, mock_watch
 ):
     mock_event = {
         "object": {
@@ -208,14 +208,12 @@ def test_watch_for_image_updates_unhandled_exception(
     mock_watch.return_value.stream.return_value = [mock_event]
     mock_handle_event.side_effect = Exception("Something bad happened")
 
-    watch_for_image_updates()
+    with pytest.raises(Exception, match="Something bad happened"):
+        watch_for_image_updates()
 
     mock_api.assert_called_once()
     mock_watch.assert_called_once()
     mock_handle_event.assert_called_once_with(mock_event)
-    mock_logger.error.assert_called_once_with(
-        "image_update_automation.failed", error=mock.ANY, image_policy_event=mock_event
-    )
 
 
 @patch("kollie.cluster.image_update_automation.watch.Watch")

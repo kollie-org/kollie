@@ -1,6 +1,8 @@
 from unittest.mock import patch
-from freezegun import freeze_time
+
 import pytest
+from freezegun import freeze_time
+
 from kollie.cluster.configmap import (
     create_env_configmap,
     delete_configmap,

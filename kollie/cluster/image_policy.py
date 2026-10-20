@@ -1,14 +1,14 @@
 from dataclasses import asdict
+from typing import cast
 
-from kubernetes import client
 import structlog
+from kubernetes import client
 
 from kollie.exceptions import KollieImagePolicyException
 
 from .constants import KOLLIE_NAMESPACE
-from .interfaces import AppTemplate
 from .image_policy_spec import LatestTimestampImagePolicySpec
-
+from .interfaces import AppTemplate
 
 logger = structlog.get_logger(__name__)
 
@@ -111,12 +111,15 @@ def _update_image_policy(
             it is being deleted.
     """
     try:
-        existing = api.get_namespaced_custom_object(
-            group="image.toolkit.fluxcd.io",
-            version="v1",
-            namespace=KOLLIE_NAMESPACE,
-            plural="imagepolicies",
-            name=name,
+        existing = cast(
+            dict,
+            api.get_namespaced_custom_object(
+                group="image.toolkit.fluxcd.io",
+                version="v1",
+                namespace=KOLLIE_NAMESPACE,
+                plural="imagepolicies",
+                name=name,
+            ),
         )
 
         if existing["metadata"].get("deletionTimestamp"):

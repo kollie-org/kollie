@@ -1,6 +1,5 @@
 import datetime
 import json
-from typing import List
 from unittest.mock import Mock
 
 from kubernetes.client.models.v1_config_map import V1ConfigMap
@@ -41,15 +40,15 @@ def build_kustomization(env_name: str, app_name: str) -> dict:
                 "entries": [
                     {"id": f"_{app_name}-{env_name}__Namespace", "v": "v1"},
                     {
-                        "id": f"{app_name}-{env_name}_helm.toolkit.fluxcd.io_HelmRelease",  # noqa
+                        "id": f"{app_name}-{env_name}_helm.toolkit.fluxcd.io_HelmRelease",
                         "v": "v2",
                     },
                     {
-                        "id": f"{app_name}-{env_name}_image.toolkit.fluxcd.io_ImagePolicy",  # noqa
+                        "id": f"{app_name}-{env_name}_image.toolkit.fluxcd.io_ImagePolicy",
                         "v": "v1",
                     },
                     {
-                        "id": f"{app_name}-{env_name}_image.toolkit.fluxcd.io_ImageRepository",  # noqa
+                        "id": f"{app_name}-{env_name}_image.toolkit.fluxcd.io_ImageRepository",
                         "v": "v1",
                     },
                 ]
@@ -73,7 +72,7 @@ def build_kustomization(env_name: str, app_name: str) -> dict:
     }
 
 
-def build_configmaps(environments: List[dict]) -> List[Mock]:
+def build_configmaps(environments: list[dict]) -> list[Mock]:
     items = []
     for environment in environments:
         configmap = Mock(spec=V1ConfigMap)
@@ -86,7 +85,7 @@ def build_configmaps(environments: List[dict]) -> List[Mock]:
                     "created_at": datetime.datetime.now(datetime.UTC).strftime(
                         "%d-%m-%Y %H:%M:%S"
                     ),
-                    "lease_exclusion_window": environment["lease_exclusion_window"] if "lease_exclusion_window" in environment else None
+                    "lease_exclusion_window": environment.get("lease_exclusion_window", None)
                 }
             )
         }

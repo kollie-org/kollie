@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+
 from fastapi.templating import Jinja2Templates
 
 from kollie.models import KollieApp
@@ -16,7 +16,6 @@ class ResourceView(ABC):
         Returns:
             str: The template path.
         """
-        pass
 
     @abstractmethod
     def build_context(self) -> dict:
@@ -26,7 +25,6 @@ class ResourceView(ABC):
         Returns:
             dict: The information to render.
         """
-        pass
 
     def render(self, templates: Jinja2Templates) -> str:
         """
@@ -61,7 +59,7 @@ class IngressView(ResourceView):
         return {"urls": self.model.urls}
 
 
-def render_resources(model: KollieApp, templates: Jinja2Templates) -> List[str]:
+def render_resources(model: KollieApp, templates: Jinja2Templates) -> list[str]:
     """
     Returns the views for the app resources.
 

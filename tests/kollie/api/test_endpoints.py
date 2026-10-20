@@ -1,13 +1,12 @@
-import os
 import json
-
-from unittest.mock import patch, mock_open
+import os
+from unittest.mock import mock_open, patch
 
 from freezegun import freeze_time
+from kubernetes.client.models import V1ConfigMap, V1ObjectMeta
 
 from kollie.models import KollieEnvironment
 from tests.kollie.helpers import build_configmaps, build_kustomization
-from kubernetes.client.models import V1ConfigMap, V1ObjectMeta
 
 
 def test_ping(test_client):
@@ -130,7 +129,7 @@ def test_environment_details(
     assert response_body["name"] == "hounslow"
 
     actual_app_names = [app["name"] for app in response_body["apps"]]
-    assert not set(actual_app_names) ^ set(["AlladinsFriedChicken", "SKVP"])
+    assert not set(actual_app_names) ^ {"AlladinsFriedChicken", "SKVP"}
 
 
 @patch("kollie.service.envs.create_env", autospec=True)

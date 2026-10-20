@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+
 import pytest
 
 from kollie.cluster.image_policy_spec import LatestTimestampImagePolicySpec

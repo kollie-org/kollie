@@ -1,11 +1,11 @@
 from typing import Annotated
-from fastapi import APIRouter, Body, HTTPException, Depends, Request
+
+from fastapi import APIRouter, Body, Depends, HTTPException, Request
+
 from kollie.app.auth import UserInfo, authenticated_user
-
 from kollie.models import EnvironmentMetadata, KollieEnvironment
-from kollie.service import envs
 from kollie.persistence import AppTemplate, get_app_template_store
-
+from kollie.service import envs
 
 router = APIRouter(prefix="/api")
 

@@ -1,12 +1,16 @@
+from typing import cast
+
+import structlog
 from kubernetes import client
 from kubernetes.client.exceptions import ApiException
-import structlog
 
-from .git_repository_request import CreateGitRepositoryRequest
-from .constants import DEFAULT_FLUX_REPOSITORY, KOLLIE_NAMESPACE
 from kollie.exceptions import (
-    CreateCustomObjectsApiException, GetCustomObjectsApiException
+    CreateCustomObjectsApiException,
+    GetCustomObjectsApiException,
 )
+
+from .constants import DEFAULT_FLUX_REPOSITORY, KOLLIE_NAMESPACE
+from .git_repository_request import CreateGitRepositoryRequest
 
 logger = structlog.get_logger(__name__)
 
@@ -37,12 +41,15 @@ def create_git_repository(
 
     custom_object_api = client.CustomObjectsApi()
     try:
-        response = custom_object_api.create_namespaced_custom_object(
-            group=GROUP,
-            version=VERSION,
-            namespace=KOLLIE_NAMESPACE,
-            plural=OBJECT_PLURAL,
-            body=request.body,
+        response = cast(
+            dict,
+            custom_object_api.create_namespaced_custom_object(
+                group=GROUP,
+                version=VERSION,
+                namespace=KOLLIE_NAMESPACE,
+                plural=OBJECT_PLURAL,
+                body=request.body,
+            ),
         )
 
         return response
@@ -62,12 +69,15 @@ def get_git_repository(env_name: str) -> dict | None:
     custom_object_api = client.CustomObjectsApi()
 
     try:
-        return custom_object_api.get_namespaced_custom_object(
-            group=GROUP,
-            version=VERSION,
-            namespace=KOLLIE_NAMESPACE,
-            plural=OBJECT_PLURAL,
-            name=name,
+        return cast(
+            dict,
+            custom_object_api.get_namespaced_custom_object(
+                group=GROUP,
+                version=VERSION,
+                namespace=KOLLIE_NAMESPACE,
+                plural=OBJECT_PLURAL,
+                name=name,
+            ),
         )
     except ApiException as api_exc:
         if api_exc.status == 404:

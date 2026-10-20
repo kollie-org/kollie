@@ -1,19 +1,17 @@
 import pathlib
 from typing import Annotated
 
-from fastapi import APIRouter, Request, Depends, HTTPException, Form
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from kollie.app.auth import UserInfo, authenticated_user, userinfo
 
+from kollie.app.auth import UserInfo, authenticated_user, userinfo
 from kollie.app.ui.templatefilters import humanise_date_filter
 from kollie.app.ui.viewmodels import render_resources
 from kollie.exceptions import KollieException
 from kollie.models import EnvironmentMetadata
-from kollie.service import envs
 from kollie.persistence import get_app_template_store
-from kollie.service import applications
-
+from kollie.service import applications, envs
 
 router = APIRouter(default_response_class=HTMLResponse)
 
@@ -340,7 +338,7 @@ async def app_save(
     applications.update_app(
         env_name=env_name,
         app_name=app_name,
-        attributes=dict(image_tag_prefix=image_tag_prefix),
+        attributes={"image_tag_prefix": image_tag_prefix},
     )
 
     return RedirectResponse(
