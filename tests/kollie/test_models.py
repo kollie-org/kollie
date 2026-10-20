@@ -46,12 +46,14 @@ def test_kollie_app_event_from_condition():
 def test_kollie_app_from_resources(mocker, kustomization):
 
     ingress = mocker.MagicMock(spec=V1Ingress)
-    ingress.spec.rules = [
-        mocker.MagicMock(
-            host="TestHost",
-            http=mocker.MagicMock(paths=[mocker.MagicMock(path="/TestPath")]),
-        )
-    ]
+    ingress.spec = mocker.MagicMock(
+        rules=[
+            mocker.MagicMock(
+                host="TestHost",
+                http=mocker.MagicMock(paths=[mocker.MagicMock(path="/TestPath")]),
+            )
+        ]
+    )
 
     app = KollieApp.from_resources(kustomization, ingress)
 
@@ -68,14 +70,16 @@ def test_kollie_app_from_resources(mocker, kustomization):
 def test_kollie_limits_urls_to_10(mocker, kustomization):
 
     ingress = mocker.MagicMock(spec=V1Ingress)
-    ingress.spec.rules = [
-        mocker.MagicMock(
-            host="TestHost",
-            http=mocker.MagicMock(
-                paths=[mocker.MagicMock(path=f"/TestPath{i}") for i in range(20)],
-            ),
-        )
-    ]
+    ingress.spec = mocker.MagicMock(
+        rules=[
+            mocker.MagicMock(
+                host="TestHost",
+                http=mocker.MagicMock(
+                    paths=[mocker.MagicMock(path=f"/TestPath{i}") for i in range(20)],
+                ),
+            )
+        ]
+    )
 
     app = KollieApp.from_resources(kustomization, ingress)
 
