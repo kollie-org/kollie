@@ -17,13 +17,13 @@ rebuild-env-configs: run
 	$(dc) exec -e PYTHONPATH=/app -it app python3 kollie/app/cli/bin.py rebuild-env-configs
 
 lint:
-	$(dc) run --rm app poetry run ruff check .
+	$(dc) run --rm app poetry run ruff check kollie tests .
 
 fix:
-	$(dc) run --rm app poetry run ruff check --fix .
+	$(dc) run --rm app poetry run ruff check kollie tests --fix .
 
 fix-unsafe:
-	$(dc) run --rm app poetry run ruff check --fix --unsafe-fixes .
+	$(dc) run --rm app poetry run ruff check kollie tests --fix --unsafe-fixes .
 
 test:
 	$(dc) run -e APPLICATION_STAGE=test -e KOLLIE_COMMON_SUBSTITUTIONS_JSON_PATH=tests/test_common_substitutions.json -e KOLLIE_DEFAULT_FLUX_REPOSITORY=test-repo --rm app poetry run pytest -sxvvv

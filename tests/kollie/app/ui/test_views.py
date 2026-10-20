@@ -136,7 +136,7 @@ def build_environment_metadata(name: str, owner_email: str) -> EnvironmentMetada
     return EnvironmentMetadata(
         name=name,
         owner_email=owner_email,
-        created_at=datetime.datetime(2024, 1, 1, tzinfo=datetime.timezone.utc),
+        created_at=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
         lease_exclusion_window=None,
     )
 
