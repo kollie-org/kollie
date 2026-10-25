@@ -80,6 +80,8 @@ spec:
               value: {{ .Values.config.leaseExclusionList | quote }}
             - name: KOLLIE_DEFAULT_FLUX_REPOSITORY
               value: {{ .Values.config.defaultFluxRepository | quote }}
+            - name: KOLLIE_REMEDIATE_IMAGE_TAG
+              value: {{ .Values.config.remediateImageTag | quote }}
       volumes:
         - emptyDir: {}
           name: tmp
